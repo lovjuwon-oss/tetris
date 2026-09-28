@@ -23,6 +23,9 @@ export function actionForCode(code: string): Action | undefined {
 interface KeyEventLike extends Event {
   readonly code: string;
   readonly repeat: boolean;
+  readonly ctrlKey: boolean;
+  readonly metaKey: boolean;
+  readonly altKey: boolean;
 }
 
 export interface Keyboard {
@@ -39,7 +42,8 @@ export function createKeyboard(
   const held = new Set<string>();
 
   const onKeyDown = (e: Event) => {
-    const { code, repeat } = e as KeyEventLike;
+    const { code, repeat, ctrlKey, metaKey, altKey } = e as KeyEventLike;
+    if (ctrlKey || metaKey || altKey) return;
     const action = actionForCode(code);
     if (!action) return;
     e.preventDefault();

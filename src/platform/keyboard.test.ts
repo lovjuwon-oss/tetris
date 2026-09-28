@@ -1,8 +1,26 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { type Keyboard, actionForCode, createKeyboard } from './keyboard';
 
-function keyEvent(type: 'keydown' | 'keyup', code: string, repeat = false): Event {
-  return Object.assign(new Event(type, { cancelable: true }), { code, repeat });
+interface Modifiers {
+  readonly ctrlKey?: boolean;
+  readonly metaKey?: boolean;
+  readonly altKey?: boolean;
+}
+
+function keyEvent(
+  type: 'keydown' | 'keyup',
+  code: string,
+  repeat = false,
+  modifiers: Modifiers = {},
+): Event {
+  return Object.assign(new Event(type, { cancelable: true }), {
+    code,
+    repeat,
+    ctrlKey: false,
+    metaKey: false,
+    altKey: false,
+    ...modifiers,
+  });
 }
 
 describe('actionForCode', () => {
@@ -55,6 +73,13 @@ describe('createKeyboard', () => {
     win.dispatchEvent(keyEvent('keydown', 'ArrowLeft'));
     expect(repeated.defaultPrevented).toBe(true);
     expect(keyboard.drain()).toEqual([{ type: 'press', action: 'left' }]);
+  });
+
+  it('Ctrl, Meta, Alt와 함께 누르면 기본 동작을 막지 않고 큐에도 쌓지 않는다', () => {
+    const e = keyEvent('keydown', 'KeyP', false, { ctrlKey: true });
+    win.dispatchEvent(e);
+    expect(e.defaultPrevented).toBe(false);
+    expect(keyboard.drain()).toEqual([]);
   });
 
   it('등록되지 않은 키는 기본 동작을 막지 않는다', () => {
