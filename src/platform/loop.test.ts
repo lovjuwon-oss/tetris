@@ -17,4 +17,8 @@ describe('advance', () => {
     expect(advance(0, 5000)).toEqual(advance(0, 100));
     expect(advance(0, 5000).ticks).toBeLessThanOrEqual(6);
   });
+
+  it('경과 시간이 음수면 0으로 처리한다', () => {
+    expect(advance(5, -20)).toEqual({ ticks: 0, accMs: 5 });
+  });
 });

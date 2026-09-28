@@ -128,10 +128,11 @@ src/
 
 ### 3.9 상태 전이
 
-`ready` → `playing` ⇄ `paused` → `gameover` → (재시작) `ready`
+`ready` → `playing` ⇄ `paused` → `gameover` → (Enter로 재시작) `playing`
 
 - 창이 포커스를 잃으면(blur, visibilitychange) 자동으로 일시정지한다.
 - 일시정지 중에는 게임 시간이 흐르지 않는다.
+- 게임오버에서 Enter를 누르면 준비 화면 없이 새 게임이 바로 시작된다.
 
 ## 4. 화면
 
