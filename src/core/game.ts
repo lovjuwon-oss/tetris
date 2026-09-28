@@ -101,7 +101,7 @@ function applyShiftRepeat(s: GameState, dtMs: number): GameState {
 function applyGravity(s: GameState, dtMs: number): GameState {
   if (!s.active) return s;
   const interval = gravityMsPerRow(s.level) / (s.softDrop ? SOFT_DROP_FACTOR : 1);
-  let gravityMs = s.gravityMs + dtMs;
+  let gravityMs = Math.min(s.gravityMs, interval) + dtMs;
   let next = s;
   while (gravityMs >= interval) {
     const moved = moveDown(next);

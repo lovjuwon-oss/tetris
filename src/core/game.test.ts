@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createGrid } from './board';
+import { TICK_MS } from './constants';
 import { INITIAL_SHIFT } from './input';
 import { type Action, type InputEvent, step } from './game';
 import type { ActivePiece, Point } from './pieces';
@@ -85,6 +86,14 @@ describe('중력', () => {
     expect(s.score).toBe(1);
     const released = step(s, [release('softDrop')], 50);
     expect(released.active?.y).toBe(21);
+  });
+
+  it('소프트드롭으로 전환해도 이전에 쌓인 중력 시간을 그대로 쓰지 않는다(순간이동 방지)', () => {
+    let s = withActive(playingState(), T(3, 20));
+    s = step(s, [], 950);
+    s = step(s, [press('softDrop')], TICK_MS);
+    expect(s.active?.y).toBeLessThanOrEqual(21);
+    expect(s.score).toBeLessThanOrEqual(1);
   });
 
   it('높은 레벨에서 한 틱에 여러 칸 떨어져도 블록을 뚫지 않는다', () => {
