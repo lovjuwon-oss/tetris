@@ -39,9 +39,13 @@ function setupCanvas(canvas: HTMLCanvasElement, width: number, height: number) {
   return ctx;
 }
 
+/** 변환을 풀고 실제 픽셀 전체를 칠한다. dpr 배율 상태로 칠하면 dpr < 1일 때 일부가 지워지지 않는다. */
 function clear(ctx: CanvasRenderingContext2D) {
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = BACKGROUND;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  ctx.restore();
 }
 
 function drawBlock(
