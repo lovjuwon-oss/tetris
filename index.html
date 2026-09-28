@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>테트리스</title>
+  </head>
+  <body>
+    <main class="game">
+      <aside class="panel">
+        <section>
+          <h2>HOLD</h2>
+          <canvas id="hold"></canvas>
+        </section>
+        <dl class="stats">
+          <dt>SCORE</dt>
+          <dd id="score">0</dd>
+          <dt>LEVEL</dt>
+          <dd id="level">1</dd>
+          <dt>LINES</dt>
+          <dd id="lines">0</dd>
+        </dl>
+      </aside>
+      <div class="board-wrap">
+        <canvas id="board"></canvas>
+        <div id="overlay" class="overlay"></div>
+      </div>
+      <aside class="panel">
+        <section>
+          <h2>NEXT</h2>
+          <canvas id="next"></canvas>
+        </section>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
