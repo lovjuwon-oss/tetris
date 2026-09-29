@@ -5,8 +5,13 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/core/**/*.ts'],
-      exclude: ['src/core/**/*.test.ts', 'src/core/test-helpers.ts'],
+      include: [
+        'src/core/**/*.ts',
+        'src/platform/gestures.ts',
+        'src/platform/input-hub.ts',
+        'src/render/layout.ts',
+      ],
+      exclude: ['src/**/*.test.ts', 'src/core/test-helpers.ts'],
       thresholds: { lines: 90, statements: 90, functions: 90 },
     },
   },
