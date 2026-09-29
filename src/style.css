@@ -16,30 +16,52 @@ body {
   color: #e6e9ef;
 }
 
+/* PC 배치 */
 .game {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'hold board next'
+    'stats board next';
   gap: 24px;
-  align-items: flex-start;
+  align-items: start;
 }
 
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.hold-box {
+  grid-area: hold;
   min-width: 120px;
 }
 
-.panel h2,
+.stats {
+  grid-area: stats;
+  margin: 0;
+  min-width: 120px;
+}
+
+.board-slot {
+  grid-area: board;
+}
+
+.next-box {
+  grid-area: next;
+  min-width: 120px;
+}
+
+.pause-btn,
+.controls,
+.rotate-notice {
+  display: none;
+}
+
+.hold-box h2,
+.next-box h2,
 .stats dt {
   margin: 0 0 8px;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.15em;
   color: #8a93a6;
-}
-
-.stats {
-  margin: 0;
 }
 
 .stats dd {
@@ -68,6 +90,7 @@ canvas {
   padding: 16px;
   text-align: center;
   background: rgba(10, 12, 17, 0.82);
+  cursor: pointer;
 }
 
 .overlay[hidden] {
@@ -85,4 +108,140 @@ canvas {
   font-size: 14px;
   color: #c3c9d6;
   word-break: keep-all;
+}
+
+/* 모바일 배치. layout.ts의 MOBILE_MAX_WIDTH와 맞춘다 */
+@media (max-width: 700px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    display: block;
+    min-height: 0;
+  }
+
+  .game {
+    position: fixed;
+    inset: 0;
+    grid-template-columns: minmax(0, 1fr) 76px;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'stats pause'
+      'board hold'
+      'board next'
+      'controls controls';
+    gap: 8px 10px;
+    align-items: stretch;
+    padding: calc(8px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right))
+      calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    align-self: center;
+    gap: 2px 8px;
+    min-width: 0;
+  }
+
+  .stats dt {
+    margin: 0;
+    font-size: 11px;
+  }
+
+  .stats dd {
+    margin: 0 6px 0 0;
+    font-size: 16px;
+  }
+
+  .pause-btn {
+    display: block;
+    grid-area: pause;
+    justify-self: end;
+    align-self: center;
+    width: 44px;
+    height: 36px;
+    border: 1px solid #2a3040;
+    border-radius: 8px;
+    background: #161a23;
+    color: #e6e9ef;
+    font-size: 16px;
+  }
+
+  .hold-box,
+  .next-box {
+    min-width: 0;
+  }
+
+  .hold-box h2,
+  .next-box h2 {
+    margin: 0 0 4px;
+    font-size: 11px;
+  }
+
+  .board-slot {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .overlay h1 {
+    font-size: 26px;
+  }
+}
+
+/* 터치 버튼. layout.ts의 MOBILE_MAX_WIDTH, TOUCH_QUERY와 맞춘다 */
+@media (max-width: 700px) and (pointer: coarse) {
+  .controls {
+    display: grid;
+    grid-area: controls;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 8px;
+  }
+
+  .controls button {
+    grid-column: span 3;
+    min-height: 56px;
+    border: 1px solid #2a3040;
+    border-radius: 12px;
+    background: #161a23;
+    color: #e6e9ef;
+    font-size: 18px;
+    touch-action: none;
+  }
+
+  .controls button:active {
+    background: #232a38;
+  }
+
+  .controls .wide {
+    grid-column: span 4;
+  }
+}
+
+/* 가로 방향 안내. layout.ts의 LANDSCAPE_QUERY와 맞춘다 */
+@media (pointer: coarse) and (orientation: landscape) and (max-height: 500px) {
+  .rotate-notice {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    background: #0a0c11;
+    color: #e6e9ef;
+    font-size: 18px;
+  }
 }

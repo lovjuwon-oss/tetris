@@ -7,7 +7,9 @@ export interface HudElements {
   lines: HTMLElement;
 }
 
-const MESSAGES: Record<Exclude<Phase, 'playing'>, (s: GameState) => string[]> = {
+type Messages = Record<Exclude<Phase, 'playing'>, (s: GameState) => string[]>;
+
+const KEYBOARD_MESSAGES: Messages = {
   ready: () => [
     'TETRIS',
     'Enter 키로 시작',
@@ -18,7 +20,22 @@ const MESSAGES: Record<Exclude<Phase, 'playing'>, (s: GameState) => string[]> = 
   gameover: (s) => ['게임 오버', `점수 ${s.score.toLocaleString()}`, 'Enter 키로 다시 시작'],
 };
 
-export function createHud(els: HudElements): { update(state: GameState): void } {
+const TOUCH_MESSAGES: Messages = {
+  ready: () => [
+    'TETRIS',
+    '화면을 탭해서 시작',
+    '탭 회전 · 좌우로 끌어 이동 · 아래로 끌어 소프트드롭',
+    '아래로 튕겨 하드드롭 · 위로 튕겨 홀드',
+  ],
+  paused: () => ['일시정지', '탭해서 계속'],
+  gameover: (s) => ['게임 오버', `점수 ${s.score.toLocaleString()}`, '탭해서 다시 시작'],
+};
+
+export function createHud(
+  els: HudElements,
+  options: { touch: boolean },
+): { update(state: GameState): void } {
+  const messages = options.touch ? TOUCH_MESSAGES : KEYBOARD_MESSAGES;
   let lastKey = '';
   return {
     update(state) {
@@ -34,7 +51,7 @@ export function createHud(els: HudElements): { update(state: GameState): void } 
       }
       els.overlay.hidden = false;
       els.overlay.replaceChildren(
-        ...MESSAGES[state.phase](state).map((text, i) => {
+        ...messages[state.phase](state).map((text, i) => {
           const el = document.createElement(i === 0 ? 'h1' : 'p');
           el.textContent = text;
           return el;

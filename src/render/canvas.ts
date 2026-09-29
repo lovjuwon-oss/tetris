@@ -8,6 +8,7 @@ import {
 } from '../core/constants';
 import { type PieceType, type Point, SHAPES, pieceCells } from '../core/pieces';
 import { type GameState, nextPreview } from '../core/state';
+import { desktopCell, isMobileWidth, miniCell, slotCell } from './layout';
 
 export const PIECE_COLORS: Record<PieceType, string> = {
   I: '#31c7ef',
@@ -22,8 +23,6 @@ export const PIECE_COLORS: Record<PieceType, string> = {
 const BACKGROUND = '#10131a';
 const GRID_LINE = '#1c212c';
 const DISABLED = '#4a4f5c';
-const MIN_CELL = 12;
-const MINI_SCALE = 0.7;
 const MINI_COLS = 5;
 const MINI_ROWS = 3;
 
@@ -139,22 +138,29 @@ function drawMini(
 export interface Renderer {
   resize(): void;
   draw(state: GameState): void;
+  /** 현재 보드 칸 크기 (CSS px). 가로 드래그 한 칸의 기준 */
+  cellPx(): number;
 }
 
-export function createRenderer(canvases: {
+export function createRenderer(els: {
   board: HTMLCanvasElement;
   hold: HTMLCanvasElement;
   next: HTMLCanvasElement;
+  /** 보드가 들어갈 빈칸. 모바일에서는 이 크기를 재서 칸 크기를 정한다 */
+  slot: HTMLElement;
 }): Renderer {
   const layout = () => {
-    const cell = Math.max(MIN_CELL, Math.floor((window.innerHeight * 0.85) / VISIBLE_HEIGHT));
-    const mini = Math.floor(cell * MINI_SCALE);
+    const mobile = isMobileWidth(window.innerWidth);
+    const cell = mobile
+      ? slotCell(els.slot.clientWidth, els.slot.clientHeight)
+      : desktopCell(window.innerHeight);
+    const mini = miniCell(cell, mobile);
     return {
       cell,
       mini,
-      board: setupCanvas(canvases.board, BOARD_WIDTH * cell, VISIBLE_HEIGHT * cell),
-      hold: setupCanvas(canvases.hold, MINI_COLS * mini, MINI_ROWS * mini),
-      next: setupCanvas(canvases.next, MINI_COLS * mini, MINI_ROWS * mini * NEXT_PREVIEW_COUNT),
+      board: setupCanvas(els.board, BOARD_WIDTH * cell, VISIBLE_HEIGHT * cell),
+      hold: setupCanvas(els.hold, MINI_COLS * mini, MINI_ROWS * mini),
+      next: setupCanvas(els.next, MINI_COLS * mini, MINI_ROWS * mini * NEXT_PREVIEW_COUNT),
     };
   };
   let view = layout();
@@ -172,5 +178,6 @@ export function createRenderer(canvases: {
         drawMini(view.next, type, view.mini, i * MINI_ROWS * view.mini);
       });
     },
+    cellPx: () => view.cell,
   };
 }
