@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { desktopCell, isMobileWidth, miniCell, slotCell } from './layout';
+import { MOBILE_QUERY, desktopCell, miniCell, slotCell } from './layout';
 
-describe('isMobileWidth', () => {
-  it('700px 이하는 모바일 배치', () => {
-    expect(isMobileWidth(390)).toBe(true);
-    expect(isMobileWidth(700)).toBe(true);
-    expect(isMobileWidth(701)).toBe(false);
+describe('MOBILE_QUERY', () => {
+  it('style.css의 모바일 미디어 쿼리와 같은 문자열', () => {
+    expect(MOBILE_QUERY).toBe('(max-width: 700px)');
   });
 });
 
@@ -45,6 +43,11 @@ describe('slotCell', () => {
 describe('miniCell', () => {
   it('미리보기 칸은 PC 0.7배, 모바일 0.5배를 버림', () => {
     expect(miniCell(34, false)).toBe(23);
+    expect(miniCell(27, true)).toBe(13);
+  });
+
+  it('모바일에서는 76px 열을 넘지 않도록 최대 15px로 제한한다', () => {
+    expect(miniCell(32, true)).toBe(15);
     expect(miniCell(27, true)).toBe(13);
   });
 });

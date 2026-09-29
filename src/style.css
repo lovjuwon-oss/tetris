@@ -110,7 +110,7 @@ canvas {
   word-break: keep-all;
 }
 
-/* 모바일 배치. layout.ts의 MOBILE_MAX_WIDTH와 맞춘다 */
+/* 모바일 배치. layout.ts의 MOBILE_QUERY와 맞춘다 */
 @media (max-width: 700px) {
   html,
   body {
@@ -146,7 +146,9 @@ canvas {
 
   .stats {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    overflow: hidden;
     align-items: baseline;
     align-self: center;
     gap: 2px 8px;
@@ -169,7 +171,7 @@ canvas {
     justify-self: end;
     align-self: center;
     width: 44px;
-    height: 36px;
+    height: 44px;
     border: 1px solid #2a3040;
     border-radius: 8px;
     background: #161a23;
@@ -195,6 +197,11 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    touch-action: none;
+  }
+
+  #board {
+    touch-action: none;
   }
 
   .overlay h1 {
@@ -202,7 +209,7 @@ canvas {
   }
 }
 
-/* 터치 버튼. layout.ts의 MOBILE_MAX_WIDTH, TOUCH_QUERY와 맞춘다 */
+/* 터치 버튼. layout.ts의 MOBILE_QUERY, TOUCH_QUERY와 맞춘다 */
 @media (max-width: 700px) and (pointer: coarse) {
   .controls {
     display: grid;

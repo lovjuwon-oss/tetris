@@ -8,7 +8,7 @@ import {
 } from '../core/constants';
 import { type PieceType, type Point, SHAPES, pieceCells } from '../core/pieces';
 import { type GameState, nextPreview } from '../core/state';
-import { desktopCell, isMobileWidth, miniCell, slotCell } from './layout';
+import { MOBILE_QUERY, desktopCell, miniCell, slotCell } from './layout';
 
 export const PIECE_COLORS: Record<PieceType, string> = {
   I: '#31c7ef',
@@ -150,7 +150,7 @@ export function createRenderer(els: {
   slot: HTMLElement;
 }): Renderer {
   const layout = () => {
-    const mobile = isMobileWidth(window.innerWidth);
+    const mobile = window.matchMedia(MOBILE_QUERY).matches;
     const cell = mobile
       ? slotCell(els.slot.clientWidth, els.slot.clientHeight)
       : desktopCell(window.innerHeight);

@@ -18,11 +18,12 @@ function byId<T extends HTMLElement>(id: string): T {
 
 let state = createGame(Date.now() >>> 0);
 
+const boardSlot = byId('board-slot');
 const renderer = createRenderer({
   board: byId<HTMLCanvasElement>('board'),
   hold: byId<HTMLCanvasElement>('hold'),
   next: byId<HTMLCanvasElement>('next'),
-  slot: byId('board-slot'),
+  slot: boardSlot,
 });
 const hud = createHud(
   { overlay: byId('overlay'), score: byId('score'), level: byId('level'), lines: byId('lines') },
@@ -60,7 +61,8 @@ landscape.addEventListener('change', () => {
   }
   renderer.resize();
 });
-window.addEventListener('resize', () => renderer.resize());
+/** #board-slot의 크기는 캔버스 크기와 무관하므로 피드백 루프 없이 재측정할 수 있다 */
+new ResizeObserver(() => renderer.resize()).observe(boardSlot);
 
 startLoop(
   () => {
